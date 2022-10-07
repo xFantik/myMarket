@@ -31,27 +31,26 @@
             <td>
                 <button class="btn btn-primary" ng-click="deleteProduct(s.id)">DELETE</button>
             </td>
-
         </tr>
 
         <tr>
+            <td colspan="4">
+                <form name="form" id="form" >
+                    <span>id</span>
+                    <input name="id" type="number" id="input-id">
+                    <span>title</span>
+                    <input name="title" type="text" id="input-title">
+                    <span>price</span>
+                    <input name="price" type="number" id="input-price">
+                    <button type="submit" ng-click="addProduct()">add</button>
+                </form>
 
+                <div id="error_text" style="color: red; visibility: hidden">ID уже существует или не заполнено название!</div>
+            </td>
 
         </tr>
         </tbody>
     </table>
-</div>
-<div align="center">
-    <form name="form" id="form" >
-        <span>id</span>
-        <input name="id" type="number" id="input-id">
-        <span>title</span>
-        <input name="title" type="text" id="input-title">
-        <span>price</span>
-        <input name="price" type="number" id="input-price">
-        <button ng-click="addProduct(id, title, price)">add</button>
-
-    </form>
 </div>
 
 </body>

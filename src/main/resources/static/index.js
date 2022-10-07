@@ -23,8 +23,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
         });
     
     };
-      $scope.addProduct = function (id, title, price){
-
+      $scope.addProduct = function (){
         $http({
             url: contextPath + '/product/addProduct',
             method: 'GET',
@@ -35,7 +34,16 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
                 }
 
         }).then(function (response){
-            $scope.loadProducts();
+            document.getElementById("error_text").style.visibility='hidden';
+
+            if (response.data == true){
+                            document.getElementById("input-id").value = "";
+                            document.getElementById("input-title").value = "";
+                            document.getElementById("input-price").value = "";
+                            $scope.loadProducts();
+                        } else {
+                            document.getElementById("error_text").style.visibility='visible';
+                        };
         });
 
     };

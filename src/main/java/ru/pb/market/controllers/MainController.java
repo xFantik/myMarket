@@ -52,12 +52,25 @@ public class MainController {
         return "productList.html";
     }
 
+//    @GetMapping ("/product/addProduct")
+//    @ResponseBody
+//    public void addProduct(@RequestParam long id, @RequestParam String title, @RequestParam(defaultValue = "0") int price){
+//        productService.addProduct(id, title, price);
+//    }
+
+
+
+
     @GetMapping ("/product/addProduct")
     @ResponseBody
-    public void addProduct(@RequestParam long id, @RequestParam String title, @RequestParam(defaultValue = "0") int price){
-        productService.addProduct(id, title, price);
-
+    public boolean addProduct(@RequestParam long id, @RequestParam String title, @RequestParam(defaultValue = "0") int price){
+        return productService.addProduct(id, title, price);
     }
+
+
+
+
+
 
     @GetMapping ("/product/deleteProduct")
     @ResponseBody
