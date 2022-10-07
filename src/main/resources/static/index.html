@@ -10,34 +10,50 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
     <script src="index.js"></script>
-    <title>Клиенты</title>
+    <title>Продукты</title>
 </head>
 <body>
-    <div class="container" ng-controller="indexController">
-        <h3>Список товаров</h3>
-        <table class="table table-hover" cellpadding="0" cellspacing="0">
-            <tr>
-                <td>ID</td>
-                <td>Название продукта</td>
-                <td>Цена</td>
-                <td></td>
-            </tr>
-            <tbody>
-            <tr ng-repeat="s in productList">
-                <td>{{s.id}}</td>
-                <td>{{s.title}}</td>
-                <td>
-<!--                <button class="btn btn-danger" ng-click="changeScore(s.id, -5)">-</button>-->
+<div class="container" ng-controller="indexController">
+    <h3>Список товаров</h3>
+    <table class="table table-hover" cellpadding="0" cellspacing="0">
+        <tr>
+            <td>ID</td>
+            <td>Название продукта</td>
+            <td>Цена</td>
+            <td></td>
+        </tr>
+        <tbody>
+        <tr ng-repeat="s in productList">
+            <td>{{s.id}}</td>
+            <td>{{s.title}}</td>
+            <td>
+                <!--                <button class="btn btn-danger" ng-click="changeScore(s.id, -5)">-</button>-->
                 {{s.price}}р.
-<!--                <button class="btn btn-primary" ng-click="changeScore(s.id, 5)">+</button>-->
-                </td>
+                <!--                <button class="btn btn-primary" ng-click="changeScore(s.id, 5)">+</button>-->
+            </td>
             <td>
                 <button class="btn btn-primary" ng-click="deleteProduct(s.id)">DELETE</button>
 
             </td>
-            </tbody>
-        </table>
-    </div>
+        </tr>
+
+        <tr>
+            <td>
+                <form name="form" id="form">
+                    <span>id</span>
+                    <input name="id" type="number" id="input-id">
+                    <span>title</span>
+                    <input name="title" type="text" id="input-title">
+                    <span>price</span>
+                    <input name="price" type="number" id="input-price">
+                    <button ng-click="addProduct(id, title, price)">add</button>
+
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 
 </body>
 </html>

@@ -23,6 +23,22 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
         });
     
     };
+      $scope.addProduct = function (id, title, price){
+
+        $http({
+            url: contextPath + '/product/addProduct',
+            method: 'GET',
+            params: {
+                id: document.getElementById("input-id").value,
+                title: document.getElementById("input-title").value,
+                price: document.getElementById("input-price").value
+                }
+
+        }).then(function (response){
+            $scope.loadProducts();
+        });
+
+    };
 
     $scope.loadProducts();
 

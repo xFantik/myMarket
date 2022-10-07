@@ -52,12 +52,11 @@ public class MainController {
         return "productList.html";
     }
 
-    @GetMapping ("/add")
+    @GetMapping ("/product/addProduct")
     @ResponseBody
-    public String addProduct(long id, String title, int price){
-        if (productService.addProduct(id, title, price))
-            return "Продукт " + title+ " добавлен";
-        else return "Ошибка добавления продукта";
+    public void addProduct(@RequestParam long id, @RequestParam String title, @RequestParam(defaultValue = "0") int price){
+        productService.addProduct(id, title, price);
+
     }
 
     @GetMapping ("/product/deleteProduct")
