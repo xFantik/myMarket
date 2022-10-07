@@ -30,7 +30,16 @@ public class ProductRepository {
     }
 
 
+    public boolean addProduct(long id, String title, int price) {
+        if (products.stream().anyMatch(p -> p.getId() == id))
+            return false;
+        else
+            products.add(new Product(id, title, price));
+        return true;
+    }
 
 
-
+    public void deleteProduct(Long productId) {
+        products.remove(findById(productId));
+    }
 }
