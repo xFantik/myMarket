@@ -47,4 +47,12 @@ public class ProductService {
         return sb.toString();
     }
 
+    public boolean addProduct(long id, String title, int price)
+    {
+        return repository.addProduct(id, title, price);
+    }
+
+    public void deleteProduct(Long productId) {
+        repository.deleteProduct(productId);
+    }
 }

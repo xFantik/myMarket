@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавить продукт</title>
+</head>
+<body>
+
+    <h3>Добавление нового продукта:</h3>
+    <!--<form method="get" action="http://localhost:8189/app/add">-->
+    <form method="get" th:action="@{'/add'}">
+        <span>id</span>
+        <input name="id" type="number">
+        <span>title</span>
+        <input name="title" type="text">
+        <span>price</span>
+        <input name="price" type="number">
+        <button type="submit">add</button>
+
+    </form>
+</body>
+</html>
