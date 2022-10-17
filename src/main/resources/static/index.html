@@ -20,7 +20,15 @@
             <td>ID</td>
             <td>Название продукта</td>
             <td>Цена</td>
-
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <input name="id" type="number" id="input_min-id" placeholder="от">
+                <input name="id" type="number" id="input_max-id" placeholder="до">
+            </td>
             <td></td>
         </tr>
         <tbody>
@@ -36,16 +44,14 @@
         <tr>
             <td colspan="4">
                 <form name="form" id="form" >
-                    <span>id</span>
-                    <input name="id" type="number" id="input-id">
-                    <span>title</span>
+                     <span>title</span>
                     <input name="title" type="text" id="input-title">
                     <span>price</span>
                     <input name="price" type="number" id="input-price">
                     <button type="submit" ng-click="addProduct()">add</button>
                 </form>
 
-                <div id="error_text" style="color: red; visibility: hidden">ID уже существует или не заполнено название!</div>
+                <div id="error_text" style="color: red; visibility: hidden">Не заполнено название или цена!</div>
             </td>
 
         </tr>

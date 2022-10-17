@@ -1,45 +1,26 @@
 package ru.pb.market.repositories;
 
-import lombok.Getter;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import ru.pb.market.dto.Product;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-@Component
-public class ProductRepository {
-    @Getter
-    private List<Product> products;
-
-    @PostConstruct
-    public void init() {
-        products = new ArrayList<>(Arrays.asList(
-                new Product(1l, "Bread", 50),
-                new Product(2l, "Milk", 80),
-                new Product(3l, "Orange", 100),
-                new Product(4l, "Potato", 15),
-                new Product(5l, "Water", 10)
-        ));
-    }
-
-    public Product findById(long id) {
-        return products.stream().filter(p -> p.getId() == id).findFirst().orElseThrow();
-    }
+public interface ProductRepository extends JpaRepository<Product, Long> {
 
 
-    public boolean addProduct(long id, String title, int price) {
-        if (products.stream().anyMatch(p -> p.getId() == id))
-            return false;
-        else
-            products.add(new Product(id, title, price));
-        return true;
-    }
 
 
-    public void deleteProduct(Long productId) {
-        products.remove(findById(productId));
-    }
+//    @Query("select p from Product p where p.price between ?1 and ?2 and p.title like ?3 and p.id < ?4")
+    @Query("select p from Product p where p.price between :priceStart and :priceEnd and p.title like :title and p.id < :id")
+    List<Product> findByPriceBetweenAndTitleLikeAndIdIsLessThan(int priceStart, int priceEnd, String title, long id);
+
+
+    List<Product> findAllByPriceBetween(int priceStart, int priceEnd);
+
+    @Query("select p from Product p where p.price < 80")
+    List<Product> findLowPriceProducts();
+
+    Optional<Product> findProductByTitle(String title);
 }

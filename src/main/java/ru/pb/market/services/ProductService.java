@@ -1,6 +1,10 @@
 package ru.pb.market.services;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import ru.pb.market.repositories.ProductRepository;
 import ru.pb.market.dto.Product;
 
@@ -10,36 +14,43 @@ import java.util.List;
 public class ProductService {
 
     //@Autowired - не лучший способ
-    private ProductRepository repository;
+    private ProductRepository productRepository;
+
 
 
     //Вместо @Autowired
-    public ProductService(ProductRepository repository) {
-        this.repository = repository;
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
     }
 
     public String getTitleById(long id) {
-        return repository.findById(id).getTitle();
+        return productRepository.getById(id).getTitle();
     }
 
     public Product getProduct(long id){
-        return repository.findById(id);
+        return productRepository.getById(id);
     }
 //    @Autowired
-//    public void setRepository(ProductRepository inMemoryRepository) {
+//    public void setRepository(ProductRepositoryInMemory inMemoryRepository) {
 //        this.inMemoryRepository = inMemoryRepository;
 //    }
 
     public List<Product> getAllProducts(){
-        return repository.getProducts();
+        return productRepository.findAllByPriceBetween(15, 200);
+        //return repository.findAll();
+    }
+
+    public List<Product> findAllByPriceBetween(int priceStart, int priceEnd){
+        return productRepository.findAllByPriceBetween(priceStart, priceEnd);
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Доступные товары:\n");
         Product p;
-        for (int i = 0; i < repository.getProducts().size(); i++) {
-            p = repository.getProducts().get(i);
+        List<Product> products = productRepository.findAll();
+        for (int i = 0; i < products.size(); i++) {
+            p = products.get(i);
             sb.append(p.getId()).append(" ").append(p.getTitle()).append(", ");
         }
         sb.append("\n");
@@ -47,12 +58,28 @@ public class ProductService {
         return sb.toString();
     }
 
-    public boolean addProduct(long id, String title, int price)
+    public boolean addProduct(String title, int price)
     {
-        return repository.addProduct(id, title, price);
+        if (title.equals("") || price == 0)
+            return false;
+        else {
+            productRepository.save(new Product(title, price));
+            return true;
+        }
     }
 
+    @Transactional  //На протяжении всего метода транзакция не закрывается.
+    public void changePrice(Long productId, Integer price){
+        Product product = productRepository.findById(productId).orElseThrow();
+        product.setPrice(price);
+        //repository.save(product);  метод не нужен, когда стоит аннотация Транзакционности
+
+    }
+
+
+    @Transactional
     public void deleteProduct(Long productId) {
-        repository.deleteProduct(productId);
+        Product p = productRepository.getById(productId);
+        productRepository.delete(p);
     }
 }
