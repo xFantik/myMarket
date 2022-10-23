@@ -1,25 +1,25 @@
 package ru.pb.market.services;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.pb.market.dto.ProductDto;
+import ru.pb.market.exceptions.AddProductException;
 import ru.pb.market.exceptions.ResourceNotFoundException;
 import ru.pb.market.repositories.ProductRepository;
-import ru.pb.market.dto.Product;
+import ru.pb.market.data.Product;
 import ru.pb.market.repositories.specification.ProductSpecification;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class ProductService {
 
     //@Autowired - не лучший способ
+
     private ProductRepository productRepository;
 
 
@@ -28,27 +28,27 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+//    @Autowired
+//    public void setRepository(ProductRepositoryInMemory inMemoryRepository) {
+//        this.inMemoryRepository = inMemoryRepository;
+//    }
+
 
     public String getTitleById(long id) {
         return productRepository.getById(id).getTitle();
     }
 
     public Product getProduct(long id) {
+        productRepository.findById(id).map(s -> new ProductDto(s)).orElseThrow();   //для использования dto
         return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
     }
-//    @Autowired
-//    public void setRepository(ProductRepositoryInMemory inMemoryRepository) {
-//        this.inMemoryRepository = inMemoryRepository;
-//    }
+
 
     public List<Product> getAllProducts() {
         return productRepository.findAllByPriceBetween(15, 200);
         //return repository.findAll();
     }
 
-    public List<Product> findAllByPriceBetween(int priceStart, int priceEnd) {
-        return productRepository.findAllByPriceBetween(priceStart, priceEnd);
-    }
 
     public Page<Product> find(Integer page, Integer minPrice, Integer maxPrice, String partName) {
         Specification<Product> specification = Specification.where(null);
@@ -62,6 +62,9 @@ public class ProductService {
         if (partName != null)
             specification = specification.and(ProductSpecification.nameLike(partName));
 
+        if (page < 1) {
+            page = 1;
+        }
         return productRepository.findAll(specification, PageRequest.of(page - 1, 5));
     }
 
@@ -79,12 +82,14 @@ public class ProductService {
         return sb.toString();
     }
 
-    public boolean addProduct(String title, int price) {
-        if (title.equals("") || price == 0)
-            return false;
+    public void addProduct(String title, int price) {
+        if (title.equals(""))
+            throw new AddProductException("Не заполнено название продукта!");
+        if (productRepository.getProductByTitleIs(title).isPresent()){
+            throw new AddProductException("Данный продукт существует");
+        }
         else {
             productRepository.save(new Product(title, price));
-            return true;
         }
     }
 

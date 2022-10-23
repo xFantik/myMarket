@@ -1,7 +1,7 @@
 angular.module('app', []).controller('indexController', function ($scope, $http) {
-    const contextPath = 'http://localhost:8189/app';
+    const contextPath = 'http://localhost:8189/app/api/v1';
 
-    $scope.currentPage = 0
+    $scope.currentPage = 1
 
 
     $input = document.getElementById('input_min-id');
@@ -11,19 +11,23 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
 
     $input.onchange = function () {
-        $scope.currentPage = 0
+        document.getElementById("error_text").style.visibility = 'hidden';
+        $scope.currentPage = 1
         $scope.loadProducts();
     };
     $input2.onchange = function () {
-        $scope.currentPage = 0
+        document.getElementById("error_text").style.visibility = 'hidden';
+        $scope.currentPage = 1
         $scope.loadProducts();
     };
     $input3.onchange = function () {
-        $scope.currentPage = 0
+        document.getElementById("error_text").style.visibility = 'hidden';
+        $scope.currentPage = 1
         $scope.loadProducts();
     };
     $input4.onchange = function () {
-        $scope.currentPage = document.getElementById("current_page-id").value - 1;
+        document.getElementById("error_text").style.visibility = 'hidden';
+        $scope.currentPage = document.getElementById("current_page-id").value;
         $scope.loadProducts();
     };
 
@@ -37,41 +41,43 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
 
     $scope.loadProducts = function () {
-        if ($scope.currentPage < 0) {
-            $scope.currentPage = 0;
+        if ($scope.currentPage < 1) {
+            $scope.currentPage = 1;
         }
         ;
-        if ($scope.currentPage+1 > $scope.pagesCount) {
-            $scope.currentPage = $scope.pagesCount-1;
+        if ($scope.currentPage > $scope.pagesCount) {
+            $scope.currentPage = $scope.pagesCount;
         }
         ;
         $http({
-                url: contextPath + '/product/find',
+                url: contextPath + '/products',
                 method: 'GET',
                 params: {
                     minPrice: document.getElementById("input_min-id").value,
                     maxPrice: document.getElementById("input_max-id").value,
                     partName: document.getElementById("input_title-id").value,
-                    page: $scope.currentPage + 1
+                    page: $scope.currentPage
                 }
             }
         ).then(function (response) {
             $scope.productList = response.data.content;
             $scope.pagesCount = response.data.totalPages;
-            $scope.currentPage = response.data.pageable.pageNumber;
-            document.getElementById("current_page-id").value = $scope.currentPage + 1;
+            $scope.currentPage = response.data.pageable.pageNumber + 1;
+            document.getElementById("current_page-id").value = $scope.currentPage;
         });
     };
 
     $scope.goToPage = function (page) {
+        document.getElementById("error_text").style.visibility = 'hidden';
         $scope.currentPage = page;
         $scope.loadProducts();
     };
 
     $scope.deleteProduct = function (productId) {
+        document.getElementById("error_text").style.visibility = 'hidden';
         $http({
-            url: contextPath + '/product/deleteProduct',
-            method: 'GET',
+            url: contextPath + '/products',
+            method: 'DELETE',
             params: {
                 productId: productId
             }
@@ -83,27 +89,26 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
     };
     $scope.addProduct = function () {
-        $http({
-            url: contextPath + '/product/addProduct',
-            method: 'GET',
-            params: {
-                title: document.getElementById("input-title").value,
-                price: document.getElementById("input-price").value
-            }
+        console.log($scope.newProductJson);
+        $http.post(contextPath + '/products', $scope.newProductJson)
+            .then(function (response) {
 
-        }).then(function (response) {
-            document.getElementById("error_text").style.visibility = 'hidden';
-
-            if (response.data == true) {
-
-                document.getElementById("input-title").value = "";
-                document.getElementById("input-price").value = "";
                 $scope.loadProducts();
-            } else {
+                document.getElementById("error_text").style.visibility = 'hidden';
+                document.getElementById("error_text").value = 'Продукт добавлен';
                 document.getElementById("error_text").style.visibility = 'visible';
-            }
-            ;
-        });
+                document.getElementById("error_text").style.color = 'green';
+
+
+            })
+            .catch(function (response) {
+                if (response.status === 400) {
+                    document.getElementById("error_text").value = response.data.message;
+                    document.getElementById("error_text").style.visibility = 'visible';
+                    document.getElementById("error_text").style.color = 'red';
+                }
+
+            });
 
     };
     $scope.loadProducts();

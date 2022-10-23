@@ -3,7 +3,7 @@ package ru.pb.market.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
-import ru.pb.market.dto.Product;
+import ru.pb.market.data.Product;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,4 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     List<Product> findLowPriceProducts();
 
     Optional<Product> findProductByTitle(String title);
+
+    Optional<Product> getProductByTitleIs(String title);
 }

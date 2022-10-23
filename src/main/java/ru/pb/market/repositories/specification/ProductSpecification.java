@@ -1,7 +1,7 @@
 package ru.pb.market.repositories.specification;
 
 import org.springframework.data.jpa.domain.Specification;
-import ru.pb.market.dto.Product;
+import ru.pb.market.data.Product;
 
 public class ProductSpecification {
     public static Specification<Product> priceGreaterOrEquals(Integer price) {

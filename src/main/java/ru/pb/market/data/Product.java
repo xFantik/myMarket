@@ -1,4 +1,4 @@
-package ru.pb.market.dto;
+package ru.pb.market.data;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +14,7 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private Long id;
 
     @Getter
     @Setter
@@ -24,7 +24,7 @@ public class Product {
     @Getter
     @Setter
     @Column(name = "price")
-    private int price;
+    private Integer price;
 
     public Product() {
     }
