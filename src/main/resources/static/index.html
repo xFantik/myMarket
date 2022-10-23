@@ -13,8 +13,17 @@
     <title>Продукты</title>
 </head>
 <body>
-<div class="container" ng-controller="indexController">
+<div class="container" ng-controller="indexController" style="">
+    <div style="margin-left: 300px">
     <h3>Список товаров</h3>
+    Страница
+    <button class="btn btn-primary" ng-click="goToPage(currentPage-1)"><</button>
+    <input name="id" type="text" id="current_page-id" style="width: 30px; text-align: center">
+    <button class="btn btn-primary" ng-click="goToPage(currentPage+1)">></button>
+<!--     {{currentPage+1}}-->
+    из {{pagesCount}}
+    </div>
+
     <table class="table table-hover" cellpadding="0" cellspacing="0">
         <tr>
             <td>ID</td>
@@ -24,7 +33,9 @@
         </tr>
         <tr>
             <td></td>
-            <td></td>
+            <td>
+                <input name="id" type="text" id="input_title-id" placeholder="фильтр">
+            </td>
             <td>
                 <input name="id" type="number" id="input_min-id" placeholder="от">
                 <input name="id" type="number" id="input_max-id" placeholder="до">
@@ -43,8 +54,8 @@
 
         <tr>
             <td colspan="4">
-                <form name="form" id="form" >
-                     <span>title</span>
+                <form name="form" id="form">
+                    <span>title</span>
                     <input name="title" type="text" id="input-title">
                     <span>price</span>
                     <input name="price" type="number" id="input-price">
@@ -61,3 +72,5 @@
 
 </body>
 </html>
+
+
