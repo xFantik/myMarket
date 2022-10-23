@@ -39,9 +39,10 @@ public class MainController {
 
     @GetMapping("/product/all")
     @ResponseBody
-    public List<Product> get(){
+    public List<Product> get(@RequestParam(defaultValue = "0") Integer min, @RequestParam(defaultValue = "9999999") Integer max){
 //        model.addAttribute("product", productService.getProduct(id));
-        return productService.getAllProducts();
+        return productService.findAllByPriceBetween(min, max);
+//        return productService.getAllProducts();
     }
 
 
@@ -63,8 +64,8 @@ public class MainController {
 
     @GetMapping ("/product/addProduct")
     @ResponseBody
-    public boolean addProduct(@RequestParam long id, @RequestParam String title, @RequestParam(defaultValue = "0") int price){
-        return productService.addProduct(id, title, price);
+    public boolean addProduct( @RequestParam String title, @RequestParam(defaultValue = "0") int price){
+        return productService.addProduct(title, price);
     }
 
 
@@ -75,6 +76,7 @@ public class MainController {
     @GetMapping ("/product/deleteProduct")
     @ResponseBody
     public void addProduct(@RequestParam Long productId){
+        System.out.println(productId);
         productService.deleteProduct(productId);
     }
 

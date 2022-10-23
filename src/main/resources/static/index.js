@@ -1,8 +1,20 @@
 angular.module('app', []).controller('indexController', function ($scope, $http) {
     const contextPath = 'http://localhost:8189/app';
 
+
+$input = document.getElementById('input_min-id');
+$input2 = document.getElementById('input_max-id');
+
+
+$input.onchange = function () {
+    $scope.loadProducts();
+  };
+$input2.onchange = function () {
+    $scope.loadProducts();
+  };
+
     $scope.loadProducts = function () {
-        $http.get(contextPath + '/product/all')
+        $http.get(contextPath + '/product/all?min='+ document.getElementById("input_min-id").value+'&max='+ document.getElementById("input_max-id").value)
             .then(function (response) {
                 $scope.productList = response.data;
             });
@@ -28,7 +40,6 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
             url: contextPath + '/product/addProduct',
             method: 'GET',
             params: {
-                id: document.getElementById("input-id").value,
                 title: document.getElementById("input-title").value,
                 price: document.getElementById("input-price").value
                 }
@@ -37,7 +48,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
             document.getElementById("error_text").style.visibility='hidden';
 
             if (response.data == true){
-                            document.getElementById("input-id").value = "";
+
                             document.getElementById("input-title").value = "";
                             document.getElementById("input-price").value = "";
                             $scope.loadProducts();
@@ -47,7 +58,6 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
         });
 
     };
-
     $scope.loadProducts();
 
 });
