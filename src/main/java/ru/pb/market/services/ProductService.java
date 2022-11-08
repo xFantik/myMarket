@@ -3,7 +3,6 @@ package ru.pb.market.services;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pb.market.dto.ProductDto;
@@ -14,9 +13,6 @@ import ru.pb.market.data.Product;
 import ru.pb.market.repositories.specification.ProductSpecification;
 
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-
 @Component
 public class ProductService {
 
@@ -41,11 +37,7 @@ public class ProductService {
     }
 
     public Product getProduct(long id) {
-
-//        productRepository.findById(id).map(s -> new ProductDto(s)).orElseThrow();   //для использования dto
-        ProductDto p = productRepository.findById(id).map((s -> new ProductDto(s))).get();
-        if (p == null)
-            throw new NoSuchElementException("No value present");
+        productRepository.findById(id).map(s -> new ProductDto(s)).orElseThrow();   //для использования dto
 
         return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
 
@@ -102,11 +94,7 @@ public class ProductService {
 
     @Transactional  //На протяжении всего метода транзакция не закрывается.
     public void changePrice(Long productId, Integer price) {
-//        Product product = productRepository.findById(productId).orElseThrow();
-        Product product = productRepository.findById(productId).get();
-
-        if (product == null)
-            throw new NoSuchElementException("No value present");
+        Product product = productRepository.findById(productId).orElseThrow();
         product.setPrice(price);
 
         //repository.save(product);  метод не нужен, когда стоит аннотация Транзакционности
