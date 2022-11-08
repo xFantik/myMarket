@@ -1,7 +1,8 @@
 angular.module('app', []).controller('indexController', function ($scope, $http) {
-    const contextPath = 'http://localhost:8189/app/api/v1';
+    const contextPath = document.URL + 'api/v1';
 
     $scope.currentPage = 1
+
 
 
     $input = document.getElementById('input_min-id');
@@ -41,14 +42,13 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
 
     $scope.loadProducts = function () {
+        console.log(document.URL);
         if ($scope.currentPage < 1) {
             $scope.currentPage = 1;
         }
-        ;
         if ($scope.currentPage > $scope.pagesCount) {
             $scope.currentPage = $scope.pagesCount;
         }
-        ;
         $http({
                 url: contextPath + '/products',
                 method: 'GET',
@@ -83,7 +83,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
             }
 
 
-        }).then(function (response) {
+        }).then(function () {
             $scope.loadProducts();
         });
 
@@ -91,7 +91,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
     $scope.addProduct = function () {
         console.log($scope.newProductJson);
         $http.post(contextPath + '/products', $scope.newProductJson)
-            .then(function (response) {
+            .then(function () {
 
                 $scope.loadProducts();
                 document.getElementById("error_text").style.visibility = 'hidden';
