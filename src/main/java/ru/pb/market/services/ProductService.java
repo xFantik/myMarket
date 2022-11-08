@@ -14,6 +14,8 @@ import ru.pb.market.data.Product;
 import ru.pb.market.repositories.specification.ProductSpecification;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Component
 public class ProductService {
@@ -39,8 +41,14 @@ public class ProductService {
     }
 
     public Product getProduct(long id) {
-        productRepository.findById(id).map(s -> new ProductDto(s)).orElseThrow();   //для использования dto
+
+//        productRepository.findById(id).map(s -> new ProductDto(s)).orElseThrow();   //для использования dto
+        ProductDto p = productRepository.findById(id).map((s -> new ProductDto(s))).get();
+        if (p == null)
+            throw new NoSuchElementException("No value present");
+
         return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+
     }
 
 
@@ -85,18 +93,22 @@ public class ProductService {
     public void addProduct(String title, int price) {
         if (title.equals(""))
             throw new AddProductException("Не заполнено название продукта!");
-        if (productRepository.getProductByTitleIs(title).isPresent()){
+        if (productRepository.getProductByTitleIs(title).isPresent()) {
             throw new AddProductException("Данный продукт существует");
-        }
-        else {
+        } else {
             productRepository.save(new Product(title, price));
         }
     }
 
     @Transactional  //На протяжении всего метода транзакция не закрывается.
     public void changePrice(Long productId, Integer price) {
-        Product product = productRepository.findById(productId).orElseThrow();
+//        Product product = productRepository.findById(productId).orElseThrow();
+        Product product = productRepository.findById(productId).get();
+
+        if (product == null)
+            throw new NoSuchElementException("No value present");
         product.setPrice(price);
+
         //repository.save(product);  метод не нужен, когда стоит аннотация Транзакционности
 
     }
