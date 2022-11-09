@@ -42,11 +42,11 @@ public class ProductService {
 
 
     public String getTitleById(long id) {
-        return productRepository.getById(id).getTitle();
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found")).getTitle();
     }
 
     public Product getProduct(long id) {
-        productRepository.findById(id).map(s -> productConverter.entityToDto(s)).orElseThrow();
+        //productRepository.findById(id).map(s -> productConverter.entityToDto(s)).orElseThrow();
         return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
 
     }
@@ -120,5 +120,9 @@ public class ProductService {
         Product product = productRepository.findById(productDto.getId()).orElseThrow(() -> new ResourceNotFoundException("Product with id " + productDto.getId() + " not found"));
         product.setTitle(productDto.getTitle());
         product.setPrice(productDto.getPrice());
+    }
+
+    public boolean existById(Long id) {
+        return productRepository.existsById(id);
     }
 }

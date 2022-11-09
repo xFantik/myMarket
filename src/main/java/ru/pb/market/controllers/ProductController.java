@@ -28,7 +28,7 @@ public class ProductController {
     }
 
     @DeleteMapping("")
-    public void addProduct(@RequestParam Long productId) {
+    public void deleteProduct(@RequestParam Long productId) {
         productService.deleteProduct(productId);
     }
 
