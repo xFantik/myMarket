@@ -8,11 +8,12 @@ import ru.pb.market.data.Product;
 @Setter
 @AllArgsConstructor
 public class ProductDto {
+    private Long id;
     private String title;
     private int price;
-    public ProductDto(Product p) {
-        this.title = p.getTitle();
-        this.price = p.getPrice();
-    }
 
+    public ProductDto(String title, int price) {
+        this.title = title;
+        this.price = price;
+    }
 }

@@ -29,7 +29,7 @@ public class Product {
     public Product() {
     }
 
-    public Product(long id, String title, int price) {
+    public Product(Long id, String title, Integer price) {
         this.id = id;
         this.title = title;
         this.price = price;

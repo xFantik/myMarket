@@ -1,30 +1,39 @@
 package ru.pb.market.services;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import ru.pb.market.converters.ProductConverter;
 import ru.pb.market.dto.ProductDto;
 import ru.pb.market.exceptions.AddProductException;
 import ru.pb.market.exceptions.ResourceNotFoundException;
 import ru.pb.market.repositories.ProductRepository;
 import ru.pb.market.data.Product;
 import ru.pb.market.repositories.specification.ProductSpecification;
+import ru.pb.market.validators.ProductValidator;
 
 import java.util.List;
 @Component
+@RequiredArgsConstructor //конструктор для Autowired
+@Slf4j
 public class ProductService {
 
     //@Autowired - не лучший способ
 
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final ProductConverter productConverter;
+
+    private final ProductValidator productValidator;
 
 
     //Вместо @Autowired
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+//    public ProductService(ProductRepository productRepository) {
+//        this.productRepository = productRepository;
+//    }
 
 //    @Autowired
 //    public void setRepository(ProductRepositoryInMemory inMemoryRepository) {
@@ -37,8 +46,7 @@ public class ProductService {
     }
 
     public Product getProduct(long id) {
-        productRepository.findById(id).map(s -> new ProductDto(s)).orElseThrow();   //для использования dto
-
+        productRepository.findById(id).map(s -> productConverter.entityToDto(s)).orElseThrow();
         return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
 
     }
@@ -65,6 +73,8 @@ public class ProductService {
         if (page < 1) {
             page = 1;
         }
+
+//        return productRepository.findAll(specification, PageRequest.of(page - 1, 5)).map(product -> productConverter.entityToDto(product));
         return productRepository.findAll(specification, PageRequest.of(page - 1, 5));
     }
 
@@ -82,14 +92,11 @@ public class ProductService {
         return sb.toString();
     }
 
-    public void addProduct(String title, int price) {
-        if (title.equals(""))
-            throw new AddProductException("Не заполнено название продукта!");
-        if (productRepository.getProductByTitleIs(title).isPresent()) {
-            throw new AddProductException("Данный продукт существует");
-        } else {
-            productRepository.save(new Product(title, price));
-        }
+    public void addProduct(ProductDto productDto) {
+        productValidator.validate(productDto);
+        productRepository.save(productConverter.dtoToEntity(productDto));
+        log.info("Добавлен продукт: " + productDto.getTitle());
+
     }
 
     @Transactional  //На протяжении всего метода транзакция не закрывается.
@@ -106,5 +113,12 @@ public class ProductService {
     public void deleteProduct(Long productId) {
         Product p = productRepository.getById(productId);
         productRepository.delete(p);
+    }
+
+    @Transactional
+    public void update(ProductDto productDto) {
+        Product product = productRepository.findById(productDto.getId()).orElseThrow(() -> new ResourceNotFoundException("Product with id " + productDto.getId() + " not found"));
+        product.setTitle(productDto.getTitle());
+        product.setPrice(productDto.getPrice());
     }
 }

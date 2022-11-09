@@ -35,8 +35,14 @@ public class ProductController {
 
     @PostMapping("")
     public void addProduct(@RequestBody ProductDto productDto) {
-         productService.addProduct(productDto.getTitle(), productDto.getPrice());
+         productService.addProduct(productDto);
     }
+
+        @PutMapping("")
+    public void updateProduct(@RequestBody ProductDto productDto) {
+         productService.update(productDto);
+    }
+
 
 
     @GetMapping("/{id}")
