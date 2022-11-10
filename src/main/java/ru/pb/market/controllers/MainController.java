@@ -1,17 +1,11 @@
 package ru.pb.market.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import ru.pb.market.data.Product;
 import ru.pb.market.services.ProductService;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,11 +26,11 @@ public class MainController {
 
 
 
-    @GetMapping("/page")
-    public String page(Model model) {
-        model.addAttribute("productList", productService.getAllProducts());
-        return "productList.html";                  //thymeleaf example
-    }
+//    @GetMapping("/page")
+//    public String page(Model model) {
+//        model.addAttribute("productList", productService.getAllProducts());
+//        return "productList.html";                  //thymeleaf example
+//    }
 
 
 

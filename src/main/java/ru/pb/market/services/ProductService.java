@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pb.market.converters.ProductConverter;
 import ru.pb.market.dto.ProductDto;
-import ru.pb.market.exceptions.AddProductException;
 import ru.pb.market.exceptions.ResourceNotFoundException;
 import ru.pb.market.repositories.ProductRepository;
 import ru.pb.market.data.Product;
@@ -53,8 +52,7 @@ public class ProductService {
 
 
     public List<Product> getAllProducts() {
-        return productRepository.findAllByPriceBetween(15, 200);
-        //return repository.findAll();
+        return productRepository.findAll();
     }
 
 
@@ -83,8 +81,8 @@ public class ProductService {
         StringBuilder sb = new StringBuilder("Доступные товары:\n");
         Product p;
         List<Product> products = productRepository.findAll();
-        for (int i = 0; i < products.size(); i++) {
-            p = products.get(i);
+        for (Product product : products) {
+            p = product;
             sb.append(p.getId()).append(" ").append(p.getTitle()).append(", ");
         }
         sb.append("\n");
@@ -96,14 +94,18 @@ public class ProductService {
         productValidator.validate(productDto);
         productRepository.save(productConverter.dtoToEntity(productDto));
         log.info("Добавлен продукт: " + productDto.getTitle());
-
     }
 
+    @Transactional
+    public void update(ProductDto productDto) {
+        Product product = productRepository.findById(productDto.getId()).orElseThrow(() -> new ResourceNotFoundException("Product with id " + productDto.getId() + " not found"));
+        product.setTitle(productDto.getTitle());
+        product.setPrice(productDto.getPrice());
+    }
     @Transactional  //На протяжении всего метода транзакция не закрывается.
     public void changePrice(Long productId, Integer price) {
         Product product = productRepository.findById(productId).orElseThrow();
         product.setPrice(price);
-
         //repository.save(product);  метод не нужен, когда стоит аннотация Транзакционности
 
     }
@@ -115,14 +117,9 @@ public class ProductService {
         productRepository.delete(p);
     }
 
-    @Transactional
-    public void update(ProductDto productDto) {
-        Product product = productRepository.findById(productDto.getId()).orElseThrow(() -> new ResourceNotFoundException("Product with id " + productDto.getId() + " not found"));
-        product.setTitle(productDto.getTitle());
-        product.setPrice(productDto.getPrice());
-    }
 
-    public boolean existById(Long id) {
-        return productRepository.existsById(id);
+
+    public List<Product> getProductsByIdIn(Long[] ids){
+        return productRepository.getProductByIdIn(ids);
     }
 }

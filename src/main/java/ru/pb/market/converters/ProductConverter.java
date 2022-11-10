@@ -12,9 +12,15 @@ public class ProductConverter {
     }
     public ProductDto entityToDto (Product p){
         return new ProductDto(p.getTitle(), p.getPrice());
+//        return null;
     }
 
     public ProductInCartDto entityToDtoInCart(Product p){
         return new ProductInCartDto(p.getId(), p.getTitle(), p.getPrice());
     }
+    public ProductInCartDto entityToDtoInCart(Product p, int count){
+        return new ProductInCartDto(p.getId(), p.getTitle(), p.getPrice(), count);
+    }
+
+
 }

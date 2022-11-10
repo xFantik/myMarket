@@ -29,16 +29,19 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String title, Integer price) {
-        this.id = id;
-        this.title = title;
-        this.price = price;
-    }
-
 
     public Product(String title, int price) {
         this.title = title;
         this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", price=" + price +
+                '}';
     }
 }
 

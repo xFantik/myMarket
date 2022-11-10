@@ -53,9 +53,8 @@ public class ProductController {
 
     @GetMapping("/all")
     public List<Product> get() {
-//        model.addAttribute("product", productService.getProduct(id));
         return productService.getAllProducts();
-//        return productService.getAllProducts();
+
     }
 
 }

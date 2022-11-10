@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import ru.pb.market.converters.ProductConverter;
 import ru.pb.market.dto.ProductInCartDto;
-import ru.pb.market.exceptions.ResourceNotFoundException;
-import ru.pb.market.repositories.ProductRepository;
 
 import javax.annotation.PostConstruct;
 import java.util.*;
@@ -50,20 +48,28 @@ public class CartService {
 
     public List<ProductInCartDto> get() {
 
-        products.entrySet().removeIf(e -> !productService.existById(e.getKey()));    //проверка на удаленные из базы продукты (надо убрать. так как удалять продукты из базы не комильфо)
-        List<ProductInCartDto> result = new ArrayList<>();
+        Long[] ids= new Long[products.size()];
+        products.keySet().toArray(ids);
 
-        ProductInCartDto productInCartDto;
-        for (Map.Entry<Long, Integer> entry : products.entrySet()) {
-            try {
-                productInCartDto=productConverter.entityToDtoInCart(productService.getProduct((entry.getKey())));
-                productInCartDto.setCount(entry.getValue());
-                result.add(productInCartDto);
-            } catch (ResourceNotFoundException e) {
-                log.warn("Продукт в корзине с id {}, не найден в базе", entry.getKey());
-            }
+        List<ProductInCartDto> productsByIdIn = productService.getProductsByIdIn(ids).stream()
+                        .map(product -> productConverter.entityToDtoInCart(product, products.get(product.getId())))
+                        .toList();
+
+
+        if (products.size() > productsByIdIn.size()){
+            products.entrySet().removeIf(e -> !isPresentInList(productsByIdIn, e.getKey()));
         }
-        return result;
+
+        return productsByIdIn;
+    }
+
+    private boolean isPresentInList(List<ProductInCartDto> list, Long id){
+        for (ProductInCartDto product : list) {
+            if (product.getId().equals(id))
+                return true;
+        }
+        log.warn("Продукт с id {}, не найден в базе, удаляем из корзины", id);
+        return false;
     }
 
 
