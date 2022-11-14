@@ -89,6 +89,7 @@ angular.module('app', []).controller('indexController', function ($scope, $http)
 
     };
     $scope.addProduct = function () {
+        $scope.newProductJson.isActive = 'true';
         console.log($scope.newProductJson);
         $http.post(contextPath + '/products', $scope.newProductJson)
             .then(function () {

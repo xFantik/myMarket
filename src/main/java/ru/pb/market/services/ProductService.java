@@ -56,7 +56,8 @@ public class ProductService {
     }
 
 
-    public Page<Product> find(Integer page, Integer minPrice, Integer maxPrice, String partName) {
+
+    public Page<Product> find(Integer page, Integer minPrice, Integer maxPrice, String partName, boolean isActive) {
         Specification<Product> specification = Specification.where(null);
 
         if (minPrice != null)
@@ -68,11 +69,13 @@ public class ProductService {
         if (partName != null)
             specification = specification.and(ProductSpecification.nameLike(partName));
 
+        if (isActive)
+            specification = specification.and(ProductSpecification.isActive());
+
         if (page < 1) {
             page = 1;
         }
 
-//        return productRepository.findAll(specification, PageRequest.of(page - 1, 5)).map(product -> productConverter.entityToDto(product));
         return productRepository.findAll(specification, PageRequest.of(page - 1, 5));
     }
 
@@ -101,6 +104,7 @@ public class ProductService {
         Product product = productRepository.findById(productDto.getId()).orElseThrow(() -> new ResourceNotFoundException("Product with id " + productDto.getId() + " not found"));
         product.setTitle(productDto.getTitle());
         product.setPrice(productDto.getPrice());
+        product.setActive(productDto.isActive());
     }
     @Transactional  //На протяжении всего метода транзакция не закрывается.
     public void changePrice(Long productId, Integer price) {
@@ -108,13 +112,6 @@ public class ProductService {
         product.setPrice(price);
         //repository.save(product);  метод не нужен, когда стоит аннотация Транзакционности
 
-    }
-
-
-    @Transactional
-    public void deleteProduct(Long productId) {
-        Product p = productRepository.getById(productId);
-        productRepository.delete(p);
     }
 
 

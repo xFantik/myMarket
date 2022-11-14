@@ -1,20 +1,27 @@
-
-CREATE TABLE products (id bigserial,  title VARCHAR(255), price int, PRIMARY KEY (id));
-INSERT INTO products (title, price) VALUES ('Bread', 10),
-('Jam', 15),
-('Cherry', 120),
-('Milk', 120),
-('Jam', 15),
-('Cherry', 120),
-('Milk', 120),
-('Jam', 15),
-('Cherry', 90),
-('Milk', 30),
-('Jam', 15),
-('Cherry', 60),
-('Milk', 120),
-('Jam', 15),
-('Cherry', 120),
-('Milk', 120),
-('Salt', 110);
+CREATE TABLE products
+(
+    id     bigserial,
+    title  VARCHAR(255),
+    price  int,
+    active boolean,
+    PRIMARY KEY (id)
+);
+INSERT INTO products (title, price, active)
+VALUES ('Bread', 10, true),
+       ('Jam', 15, true),
+       ('Cherry', 120, true),
+       ('Milk', 120, false),
+       ('Jam', 15, true),
+       ('Cherry', 120, false),
+       ('Milk', 120, true),
+       ('Jam', 15, false),
+       ('Cherry', 90, true),
+       ('Milk', 30, true),
+       ('Jam', 15, true),
+       ('Cherry', 60, true),
+       ('Milk', 120, true),
+       ('Jam', 15, true),
+       ('Cherry', 120, true),
+       ('Milk', 120, false),
+       ('Salt', 110, true);
 

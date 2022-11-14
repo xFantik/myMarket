@@ -8,11 +8,10 @@ import ru.pb.market.dto.ProductInCartDto;
 @Component
 public class ProductConverter {
     public Product dtoToEntity(ProductDto p){
-        return new Product(p.getTitle(), p.getPrice());
+        return new Product(p.getTitle(), p.getPrice(), p.isActive());
     }
     public ProductDto entityToDto (Product p){
-        return new ProductDto(p.getTitle(), p.getPrice());
-//        return null;
+        return new ProductDto(p.getTitle(), p.getPrice(), p.isActive());
     }
 
     public ProductInCartDto entityToDtoInCart(Product p){

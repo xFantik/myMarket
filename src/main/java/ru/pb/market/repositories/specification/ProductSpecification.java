@@ -16,4 +16,9 @@ public class ProductSpecification {
         return ((((root, query, criteriaBuilder) -> criteriaBuilder.like(root.get("title"), String.format("%%%s%%", titlePart)))));
     }
 
+    public static Specification<Product> isActive(){
+        return (((((root, query, criteriaBuilder) -> criteriaBuilder.isTrue(root.get("isActive"))))));
+//        return (((((root, query, criteriaBuilder) -> criteriaBuilder.l
+    }
+
 }

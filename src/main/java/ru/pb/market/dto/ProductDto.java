@@ -8,8 +8,11 @@ public class ProductDto {
     private String title;
     private int price;
 
-    public ProductDto(String title, int price) {
+    private boolean active;
+
+    public ProductDto(String title, int price, boolean isActive) {
         this.title = title;
         this.price = price;
+        this.active = isActive;
     }
 }
