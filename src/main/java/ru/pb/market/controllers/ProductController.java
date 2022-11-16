@@ -18,31 +18,26 @@ public class ProductController {
     private final ProductService productService;
 
 
-
     @GetMapping("")
     public Page<Product> find(@RequestParam(defaultValue = "1") Integer page,
                               @RequestParam(required = false) Integer minPrice,
                               @RequestParam(required = false) Integer maxPrice,
-                              @RequestParam(required = false) String partName)  {
-        return productService.find(page, minPrice, maxPrice, partName);
+                              @RequestParam(required = false) String partName,
+                              @RequestParam(defaultValue = "true") boolean active) {
+        return productService.find(page, minPrice, maxPrice, partName, active);
     }
 
-    @DeleteMapping("")
-    public void addProduct(@RequestParam Long productId) {
-        productService.deleteProduct(productId);
-    }
 
 
     @PostMapping("")
     public void addProduct(@RequestBody ProductDto productDto) {
-         productService.addProduct(productDto);
+        productService.addProduct(productDto);
     }
 
-        @PutMapping("")
+    @PutMapping("")
     public void updateProduct(@RequestBody ProductDto productDto) {
-         productService.update(productDto);
+        productService.update(productDto);
     }
-
 
 
     @GetMapping("/{id}")
@@ -53,9 +48,8 @@ public class ProductController {
 
     @GetMapping("/all")
     public List<Product> get() {
-//        model.addAttribute("product", productService.getProduct(id));
         return productService.getAllProducts();
-//        return productService.getAllProducts();
+
     }
 
 }

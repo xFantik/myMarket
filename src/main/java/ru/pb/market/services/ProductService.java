@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import ru.pb.market.converters.ProductConverter;
 import ru.pb.market.dto.ProductDto;
-import ru.pb.market.exceptions.AddProductException;
 import ru.pb.market.exceptions.ResourceNotFoundException;
 import ru.pb.market.repositories.ProductRepository;
 import ru.pb.market.data.Product;
@@ -42,23 +41,23 @@ public class ProductService {
 
 
     public String getTitleById(long id) {
-        return productRepository.getById(id).getTitle();
+        return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found")).getTitle();
     }
 
     public Product getProduct(long id) {
-        productRepository.findById(id).map(s -> productConverter.entityToDto(s)).orElseThrow();
+        //productRepository.findById(id).map(s -> productConverter.entityToDto(s)).orElseThrow();
         return productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
 
     }
 
 
     public List<Product> getAllProducts() {
-        return productRepository.findAllByPriceBetween(15, 200);
-        //return repository.findAll();
+        return productRepository.findAll();
     }
 
 
-    public Page<Product> find(Integer page, Integer minPrice, Integer maxPrice, String partName) {
+
+    public Page<Product> find(Integer page, Integer minPrice, Integer maxPrice, String partName, boolean isActive) {
         Specification<Product> specification = Specification.where(null);
 
         if (minPrice != null)
@@ -70,11 +69,13 @@ public class ProductService {
         if (partName != null)
             specification = specification.and(ProductSpecification.nameLike(partName));
 
+        if (isActive)
+            specification = specification.and(ProductSpecification.isActive());
+
         if (page < 1) {
             page = 1;
         }
 
-//        return productRepository.findAll(specification, PageRequest.of(page - 1, 5)).map(product -> productConverter.entityToDto(product));
         return productRepository.findAll(specification, PageRequest.of(page - 1, 5));
     }
 
@@ -83,8 +84,8 @@ public class ProductService {
         StringBuilder sb = new StringBuilder("Доступные товары:\n");
         Product p;
         List<Product> products = productRepository.findAll();
-        for (int i = 0; i < products.size(); i++) {
-            p = products.get(i);
+        for (Product product : products) {
+            p = product;
             sb.append(p.getId()).append(" ").append(p.getTitle()).append(", ");
         }
         sb.append("\n");
@@ -96,23 +97,6 @@ public class ProductService {
         productValidator.validate(productDto);
         productRepository.save(productConverter.dtoToEntity(productDto));
         log.info("Добавлен продукт: " + productDto.getTitle());
-
-    }
-
-    @Transactional  //На протяжении всего метода транзакция не закрывается.
-    public void changePrice(Long productId, Integer price) {
-        Product product = productRepository.findById(productId).orElseThrow();
-        product.setPrice(price);
-
-        //repository.save(product);  метод не нужен, когда стоит аннотация Транзакционности
-
-    }
-
-
-    @Transactional
-    public void deleteProduct(Long productId) {
-        Product p = productRepository.getById(productId);
-        productRepository.delete(p);
     }
 
     @Transactional
@@ -120,5 +104,19 @@ public class ProductService {
         Product product = productRepository.findById(productDto.getId()).orElseThrow(() -> new ResourceNotFoundException("Product with id " + productDto.getId() + " not found"));
         product.setTitle(productDto.getTitle());
         product.setPrice(productDto.getPrice());
+        product.setActive(productDto.isActive());
+    }
+    @Transactional  //На протяжении всего метода транзакция не закрывается.
+    public void changePrice(Long productId, Integer price) {
+        Product product = productRepository.findById(productId).orElseThrow();
+        product.setPrice(price);
+        //repository.save(product);  метод не нужен, когда стоит аннотация Транзакционности
+
+    }
+
+
+
+    public List<Product> getProductsByIdIn(Long[] ids){
+        return productRepository.getProductByIdIn(ids);
     }
 }
