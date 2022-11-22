@@ -21,7 +21,6 @@ import ru.pb.market.services.UserService;
 @Slf4j
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserService userService;
 
     private final JwtRequestFilter jwtRequestFilter;
 
@@ -32,6 +31,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()       //Встроенная безопасноть, запрещающая обращаться к приложению из браузера (например для работы с thymeleaf)
                 .authorizeRequests()
                 //.antMatchers("/auth/**").anonymous()
+
+                .antMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/users/**").hasAnyRole("ADMIN", "SUPERADMIN")
                 .antMatchers(                "/api/v1/users/**").hasAnyRole("SUPERADMIN")
 

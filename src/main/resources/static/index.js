@@ -1,117 +1,82 @@
-angular.module('app', []).controller('indexController', function ($scope, $http) {
-    const contextPath = document.URL + 'api/v1';
-
-    $scope.currentPage = 1
-
-
-
-    $input = document.getElementById('input_min-id');
-    $input2 = document.getElementById('input_max-id');
-    $input3 = document.getElementById('input_title-id');
-    $input4 = document.getElementById('current_page-id');
+(function () {
+    angular
+        .module('market-front', ['ngRoute', 'ngStorage'])
+        .config(config)
+        .run(run);
 
 
-    $input.onchange = function () {
-        document.getElementById("error_text").style.visibility = 'hidden';
-        $scope.currentPage = 1
-        $scope.loadProducts();
-    };
-    $input2.onchange = function () {
-        document.getElementById("error_text").style.visibility = 'hidden';
-        $scope.currentPage = 1
-        $scope.loadProducts();
-    };
-    $input3.onchange = function () {
-        document.getElementById("error_text").style.visibility = 'hidden';
-        $scope.currentPage = 1
-        $scope.loadProducts();
-    };
-    $input4.onchange = function () {
-        document.getElementById("error_text").style.visibility = 'hidden';
-        $scope.currentPage = document.getElementById("current_page-id").value;
-        $scope.loadProducts();
-    };
-
-
-    // $scope.loadProducts = function () {
-    //     $http.get(contextPath + '/product/all?min='+ document.getElementById("input_min-id").value+'&max='+ document.getElementById("input_max-id").value)
-    //         .then(function (response) {
-    //             $scope.productList = response.data;
-    //         });
-    // };
-
-
-    $scope.loadProducts = function () {
-        console.log(document.URL);
-        if ($scope.currentPage < 1) {
-            $scope.currentPage = 1;
-        }
-        if ($scope.currentPage > $scope.pagesCount) {
-            $scope.currentPage = $scope.pagesCount;
-        }
-        $http({
-                url: contextPath + '/products',
-                method: 'GET',
-                params: {
-                    minPrice: document.getElementById("input_min-id").value,
-                    maxPrice: document.getElementById("input_max-id").value,
-                    partName: document.getElementById("input_title-id").value,
-                    page: $scope.currentPage
-                }
-            }
-        ).then(function (response) {
-            $scope.productList = response.data.content;
-            $scope.pagesCount = response.data.totalPages;
-            $scope.currentPage = response.data.pageable.pageNumber + 1;
-            document.getElementById("current_page-id").value = $scope.currentPage;
-        });
-    };
-
-    $scope.goToPage = function (page) {
-        document.getElementById("error_text").style.visibility = 'hidden';
-        $scope.currentPage = page;
-        $scope.loadProducts();
-    };
-
-    $scope.deleteProduct = function (productId) {
-        document.getElementById("error_text").style.visibility = 'hidden';
-        $http({
-            url: contextPath + '/products',
-            method: 'DELETE',
-            params: {
-                productId: productId
-            }
-
-
-        }).then(function () {
-            $scope.loadProducts();
-        });
-
-    };
-    $scope.addProduct = function () {
-        $scope.newProductJson.isActive = 'true';
-        console.log($scope.newProductJson);
-        $http.post(contextPath + '/products', $scope.newProductJson)
-            .then(function () {
-
-                $scope.loadProducts();
-                document.getElementById("error_text").style.visibility = 'hidden';
-                document.getElementById("error_text").value = 'Продукт добавлен';
-                document.getElementById("error_text").style.visibility = 'visible';
-                document.getElementById("error_text").style.color = 'green';
-
-
+    function config($routeProvider) {
+        $routeProvider
+            .when('/', {
+                templateUrl: 'welcome/welcome.html',
+                controller: 'welcomeController'
             })
-            .catch(function (response) {
-                if (response.status === 400) {
-                    document.getElementById("error_text").value = response.data.message;
-                    document.getElementById("error_text").style.visibility = 'visible';
-                    document.getElementById("error_text").style.color = 'red';
-                }
-
+            .when('/store', {
+                templateUrl: 'store/store.html',
+                controller: 'storeController'
+            })
+            .when('/edit_product/:productId', {
+                templateUrl: 'edit_product/edit_product.html',
+                controller: 'editProductController'
+            })
+            .when('/create_product', {
+                templateUrl: 'create_product/create_product.html',
+                controller: 'createProductController'
+            })
+            .when('/register_user', {
+                templateUrl: 'register_user/register_user.html',
+                controller: 'registerUserController'
+            })
+            .otherwise({
+                redirectTo: '/'
             });
+    }
 
+    function run($rootScope, $http, $localStorage) {
+        if ($localStorage.webMarketUser) {
+            $http.defaults.headers.common.Authorization = 'Bearer ' + $localStorage.webMarketUser.token;
+        }
+    }
+})();
+
+angular.module('market-front').controller('indexController', function ($rootScope, $scope, $http, $localStorage) {
+    const contextPath = 'http://localhost:8189/market';
+
+    $scope.tryToAuth = function () {
+        $http.post(contextPath + '/auth', $scope.user)
+            .then(function successCallback(response) {
+                if (response.data.token) {
+                    $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
+                    $localStorage.webMarketUser = {username: $scope.user.username, token: response.data.token};
+
+                    $scope.user.username = null;
+                    $scope.user.password = null;
+                }
+            }, function errorCallback(response) {
+                alert(response.data.message);
+            });
     };
-    $scope.loadProducts();
 
+    $scope.tryToLogout = function () {
+        $scope.clearUser();
+        if ($scope.user.username) {
+            $scope.user.username = null;
+        }
+        if ($scope.user.password) {
+            $scope.user.password = null;
+        }
+    };
+
+    $scope.clearUser = function () {
+        delete $localStorage.webMarketUser;
+        $http.defaults.headers.common.Authorization = '';
+    };
+
+    $rootScope.isUserLoggedIn = function () {
+        if ($localStorage.webMarketUser) {
+            return true;
+        } else {
+            return false;
+        }
+    };
 });

@@ -14,6 +14,7 @@ import ru.pb.market.data.User;
 import ru.pb.market.dto.UserDto;
 import ru.pb.market.exceptions.ResourceNotFoundException;
 import ru.pb.market.exceptions.UserAlreadyExistException;
+import ru.pb.market.repositories.RoleRepository;
 import ru.pb.market.repositories.UserRepository;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Optional<User> findUserByName(String username) {
@@ -49,12 +51,13 @@ public class UserService implements UserDetailsService {
     }
 
     public void createUser(User user) {
+
         if (userRepository.findUserByUsername(user.getUsername()).isPresent())
-            throw (new UserAlreadyExistException("Имя "+ user.getUsername() + " занято"));
+            throw (new UserAlreadyExistException("Имя " + user.getUsername() + " занято"));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         List<Role> roles = new ArrayList<>();
-        Role role = new Role();
-        role.setName("ROLE_USER");
+        Role role =
+                roleRepository.findRoleByName("ROLE_USER").get();
         roles.add(role);
         user.setRoles(roles);
         userRepository.save(user);
@@ -67,7 +70,6 @@ public class UserService implements UserDetailsService {
         user.setEmail(userDto.getEmail());
         user.setRoles(userDto.getRoles());
     }
-
 
 
 }
