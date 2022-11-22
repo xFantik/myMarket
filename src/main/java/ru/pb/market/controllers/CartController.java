@@ -14,7 +14,6 @@ public class CartController {
 
     private final CartService cartService;
 
-
     @GetMapping("")
     public List<ProductInCartDto> getCart() {
         return cartService.get();

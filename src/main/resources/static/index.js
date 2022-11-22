@@ -22,7 +22,10 @@
             .when('/create_product', {
                 templateUrl: 'create_product/create_product.html',
                 controller: 'createProductController'
-            })
+            }).when('/cart', {
+            templateUrl: 'cart/cart.html',
+            controller: 'cartController'
+        })
             .when('/register_user', {
                 templateUrl: 'register_user/register_user.html',
                 controller: 'registerUserController'
