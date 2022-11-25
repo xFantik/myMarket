@@ -32,12 +32,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 //.antMatchers("/auth/**").anonymous()
 
+                .antMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
+                .antMatchers("/api/v1/products/**").hasAnyRole("ADMIN", "MANAGER")
+                .antMatchers("/api/v1/cart/**").authenticated()
+
+
                 .antMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/users/**").hasAnyRole("ADMIN", "SUPERADMIN")
                 .antMatchers(                "/api/v1/users/**").hasAnyRole("SUPERADMIN")
 
-                .antMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll()
-                .antMatchers("/api/v1/products/**").hasAnyRole("ADMIN", "MANAGER")
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -48,7 +51,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))  //отдать ошибку на фронт
                                                         ;
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-
     }
 
     @Bean

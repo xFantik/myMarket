@@ -3,6 +3,7 @@ package ru.pb.market.dto;
 import lombok.*;
 
 @Getter
+@AllArgsConstructor
 public class ProductDto {
     private Long id;
     private String title;
@@ -10,9 +11,4 @@ public class ProductDto {
 
     private boolean active;
 
-    public ProductDto(String title, int price, boolean isActive) {
-        this.title = title;
-        this.price = price;
-        this.active = isActive;
-    }
 }

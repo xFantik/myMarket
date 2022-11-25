@@ -33,6 +33,8 @@
             .otherwise({
                 redirectTo: '/'
             });
+
+
     }
 
     function run($rootScope, $http, $localStorage) {
@@ -43,15 +45,21 @@
 })();
 
 angular.module('market-front').controller('indexController', function ($rootScope, $scope, $http, $localStorage) {
-    const contextPath = 'http://localhost:8189/market';
+    // const contextPath = 'http://localhost:8189/market';
+    const contextPath = 'http://' + window.location.hostname + ':' + window.location.port + '/market'
 
     $scope.tryToAuth = function () {
         $http.post(contextPath + '/auth', $scope.user)
             .then(function successCallback(response) {
                 if (response.data.token) {
                     $http.defaults.headers.common.Authorization = 'Bearer ' + response.data.token;
-                    $localStorage.webMarketUser = {username: $scope.user.username, token: response.data.token};
+                    $localStorage.webMarketUser = {
+                        username: $scope.user.username,
+                        token: response.data.token,
+                        roles: response.data.roles
+                    };
 
+                    $scope.username = $localStorage.webMarketUser.username
                     $scope.user.username = null;
                     $scope.user.password = null;
                 }
@@ -59,6 +67,7 @@ angular.module('market-front').controller('indexController', function ($rootScop
                 alert(response.data.message);
             });
     };
+
 
     $scope.tryToLogout = function () {
         $scope.clearUser();
@@ -68,6 +77,7 @@ angular.module('market-front').controller('indexController', function ($rootScop
         if ($scope.user.password) {
             $scope.user.password = null;
         }
+        window.location.href = 'http://' + window.location.hostname + ':' + window.location.port + '/market';
     };
 
     $scope.clearUser = function () {
@@ -77,9 +87,17 @@ angular.module('market-front').controller('indexController', function ($rootScop
 
     $rootScope.isUserLoggedIn = function () {
         if ($localStorage.webMarketUser) {
+            $scope.username = $localStorage.webMarketUser.username
             return true;
         } else {
             return false;
         }
     };
+    $rootScope.hasUserRole = function (role) {
+        if (!$rootScope.isUserLoggedIn()) return false;
+        for (let i = 0; i < $localStorage.webMarketUser.roles.length; i++) {
+            if ($localStorage.webMarketUser.roles[i].includes(role)) return true;
+        }
+        return false;
+    }
 });

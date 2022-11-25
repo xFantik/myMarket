@@ -22,20 +22,15 @@
         </tr>
         </thead>
         <tbody>
-<!--        <tr ng-repeat="p in productsPage.content">-->
-<!--            <td>{{p.id}}</td>-->
-<!--            <td>{{p.title}}</td>-->
-<!--            <td>{{p.price}}</td>-->
-<!--            <td>-->
-<!--                <button class="btn btn-primary" ng-click="navToEditProductPage(p.id)">Изменить</button>-->
-<!--            </td>-->
-<!--        </tr>-->
+
         <tr ng-repeat="s in productList">
             <td>{{s.id}}</td>
             <td><a href="/app/product/{{s.id}}/info">{{s.title}}</a></td>
             <td>{{s.price}}р.</td>
             <td>
-                <button class="btn btn-primary" ng-click="addToCart(s.id)">В корзину</button>
+                <button class="btn btn-primary" ng-click="addToCart(s.id)" ng-show="!(hasUserRole('ADMIN') || hasUserRole('MANAGER'))">В корзину</button>
+                <button class="btn btn-outline-secondary" ng-show="(hasUserRole('ADMIN') || hasUserRole('MANAGER')) && !s.active">Скрытый</button>
+                <button class="btn btn-primary" ng-show="(hasUserRole('ADMIN') || hasUserRole('MANAGER')) && s.active">Изменить</button>
             </td>
         </tbody>
     </table>

@@ -1,5 +1,5 @@
 
-angular.module('market-front').controller('storeController', function ($scope, $http, $location) {
+angular.module('market-front').controller('storeController', function ($rootScope, $scope, $http, $location, $localStorage) {
     const contextPath = 'http://localhost:8189/market/api/v1';
     $scope.currentPage = 1
 
@@ -45,6 +45,7 @@ angular.module('market-front').controller('storeController', function ($scope, $
                     minPrice: document.getElementById("input_min-id").value,
                     maxPrice: document.getElementById("input_max-id").value,
                     partName: document.getElementById("input_title-id").value,
+                    active: !($rootScope.hasUserRole('ADMIN') || $rootScope.hasUserRole('MANAGER')),
                     page: $scope.currentPage
                 }
             }
@@ -78,6 +79,7 @@ angular.module('market-front').controller('storeController', function ($scope, $
         // document.getElementById("error_text").style.visibility = 'hidden';
 
         if ($scope.isUserLoggedIn()){
+            console.log(productId);
 
             $http({
                 url: contextPath + '/cart',
@@ -89,14 +91,22 @@ angular.module('market-front').controller('storeController', function ($scope, $
 
             }).then(function () {
                 $scope.loadProducts();
-            });
-        }
+            }).catch(function (err){
+                console.log ('вернулась ошибка')
+                alert("Пожалуйста, авторизуйтесь снова");
+                $scope.clearUser();
+            })}
         else {
             alert("Пожалуйста, авторизуйтесь!");
-
         };
 
     };
+
+    $scope.clearUser = function () {
+        delete $localStorage.webMarketUser;
+        $http.defaults.headers.common.Authorization = '';
+    };
+
 
     $scope.loadProducts();
 });
