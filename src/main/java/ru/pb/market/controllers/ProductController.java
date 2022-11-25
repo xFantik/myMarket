@@ -19,7 +19,7 @@ public class ProductController {
 
 
     @GetMapping("")
-    public Page<Product> find(@RequestParam(defaultValue = "1") Integer page,
+    public Page<ProductDto> find(@RequestParam(defaultValue = "1") Integer page,
                               @RequestParam(required = false) Integer minPrice,
                               @RequestParam(required = false) Integer maxPrice,
                               @RequestParam(required = false) String partName,

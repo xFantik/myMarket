@@ -12,7 +12,7 @@ import java.util.List;
 public class UserDto {
     private Long id;
 
-    private String name;
+    private String username;
 
     private String email;
 
@@ -20,7 +20,7 @@ public class UserDto {
 
 
     public UserDto(String name, String email, List<Role> roles) {
-        this.name = name;
+        this.username = name;
         this.email = email;
         this.roles = roles;
     }

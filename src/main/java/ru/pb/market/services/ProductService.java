@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.pb.market.converters.ProductConverter;
 import ru.pb.market.dto.ProductDto;
 import ru.pb.market.exceptions.ResourceNotFoundException;
@@ -57,7 +59,7 @@ public class ProductService {
 
 
 
-    public Page<Product> find(Integer page, Integer minPrice, Integer maxPrice, String partName, boolean isActive) {
+    public Page<ProductDto> find(Integer page, Integer minPrice, Integer maxPrice, String partName, boolean isActive) {
         Specification<Product> specification = Specification.where(null);
 
         if (minPrice != null)
@@ -76,7 +78,7 @@ public class ProductService {
             page = 1;
         }
 
-        return productRepository.findAll(specification, PageRequest.of(page - 1, 5));
+        return productRepository.findAll(specification, PageRequest.of(page - 1, 10)).map((product)->productConverter.entityToDto(product));
     }
 
     @Override
@@ -93,6 +95,7 @@ public class ProductService {
         return sb.toString();
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     public void addProduct(ProductDto productDto) {
         productValidator.validate(productDto);
         productRepository.save(productConverter.dtoToEntity(productDto));

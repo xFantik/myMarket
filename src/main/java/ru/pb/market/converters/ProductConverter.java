@@ -11,7 +11,7 @@ public class ProductConverter {
         return new Product(p.getTitle(), p.getPrice(), p.isActive());
     }
     public ProductDto entityToDto (Product p){
-        return new ProductDto(p.getTitle(), p.getPrice(), p.isActive());
+        return new ProductDto(p.getId(), p.getTitle(), p.getPrice(), p.isActive());
     }
 
     public ProductInCartDto entityToDtoInCart(Product p){

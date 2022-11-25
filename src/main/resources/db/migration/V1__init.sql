@@ -1,6 +1,6 @@
 CREATE TABLE products
 (
-    id     bigserial,
+    id     bigserial,  //то же самое, что bigint autoincrement
     title  VARCHAR(255),
     price  int,
     active boolean,

@@ -2,7 +2,7 @@ package ru.pb.market.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.pb.market.dto.ProductDto;
+import ru.pb.market.data.User;
 import ru.pb.market.dto.UserDto;
 import ru.pb.market.services.UserService;
 
@@ -23,8 +23,11 @@ public class UserController {
 
 
     @PostMapping("")
-    public void addUser(@RequestBody UserDto userDto) {
-        userService.addUser(userDto);
+    public void createUser(@RequestBody User user) {
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
+        System.out.println(user.getEmail());
+        userService.createUser(user);
     }
 
     @PutMapping("")

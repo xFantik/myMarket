@@ -1,0 +1,63 @@
+<div>
+    <p></p>
+    <h3>Каталог товаров</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <td></td>
+            <td>
+                <input name="id" type="text" id="input_title-id" placeholder="фильтр">
+            </td>
+            <td>
+                <input name="id" type="number" id="input_min-id" placeholder="от">
+                <input name="id" type="number" id="input_max-id" placeholder="до">
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>ID</td>
+            <td>Название</td>
+            <td>Цена</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr ng-repeat="s in productList">
+            <td>{{s.id}}</td>
+            <td><a href="/app/product/{{s.id}}/info">{{s.title}}</a></td>
+            <td>{{s.price}}р.</td>
+            <td>
+                <button class="btn btn-primary" ng-click="addToCart(s.id)"
+                        ng-show="!(hasUserRole('ADMIN') || hasUserRole('MANAGER'))">В корзину
+                </button>
+                <a class="nav-link" style="margin: 0; padding: 0" href="#!/edit_product/{{s.id}}">
+                    <button class="btn btn-outline-secondary"
+                            ng-show="(hasUserRole('ADMIN') || hasUserRole('MANAGER')) && !s.active">Скрытый
+                    </button>
+                    <button class="btn btn-primary"
+                            ng-show="(hasUserRole('ADMIN') || hasUserRole('MANAGER')) && s.active">Изменить
+                    </button>
+                </a>
+            </td>
+        </tbody>
+    </table>
+    <p></p>
+
+
+    <div style="margin-left: 300px">
+        Страница
+        <button class="btn btn-primary" ng-click="goToPage(currentPage-1)"><</button>
+        <input name="id" type="text" id="current_page-id" style="width: 30px; text-align: center">
+        <button class="btn btn-primary" ng-click="goToPage(currentPage+1)">></button>
+        <!--     {{currentPage+1}}-->
+        из {{pagesCount}}
+    </div>
+    <!--    <nav aria-label="Page navigation">-->
+    <!--        <ul class="pagination">-->
+    <!--            <li class="page-item" ng-repeat="pageIndex in paginationArray">-->
+    <!--                <button class="page-link" ng-click="loadProducts(pageIndex)">{{pageIndex}}</button>-->
+    <!--            </li>-->
+    <!--        </ul>-->
+    <!--    </nav>-->
+</div>
