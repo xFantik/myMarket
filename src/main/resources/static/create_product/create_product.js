@@ -14,6 +14,15 @@ angular.module('market-front').controller('createProductController', function ($
             }, function failureCallback (response) {
                 console.log(response);
                 alert(response.data.messages);
-            });
+            }).catch(function (err){
+            alert("Пожалуйста, авторизуйтесь");
+            $scope.clearUser();
+        });
     }
+
+    $scope.clearUser = function () {
+        delete $localStorage.webMarketUser;
+        $http.defaults.headers.common.Authorization = '';
+        window.location.href = 'http://' + window.location.hostname + ':' + window.location.port + '/market';
+    };
 });
