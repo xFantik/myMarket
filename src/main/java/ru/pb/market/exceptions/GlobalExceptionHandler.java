@@ -1,5 +1,6 @@
 package ru.pb.market.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -33,6 +34,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<AppError> userNameIsBusy(UserAlreadyExistException e){
         return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler
+    public ResponseEntity<AppError> emptyCart(EmptyCartException e){
+        return new ResponseEntity<>(new AppError(HttpStatus.BAD_REQUEST.value(), e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
 
+    @ExceptionHandler
+    public ResponseEntity<AppError> tokenExpired(ExpiredJwtException e){
+        return new ResponseEntity<>(new AppError(HttpStatus.UNAUTHORIZED.value(), e.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
 
 }

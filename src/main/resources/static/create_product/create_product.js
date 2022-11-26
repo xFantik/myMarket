@@ -1,5 +1,5 @@
 angular.module('market-front').controller('createProductController', function ($scope, $http, $location) {
-    const contextPath = 'http://localhost:8189/market/';
+    const contextPath = 'http://' + window.location.hostname + ':' + window.location.port + '/market/';
 
     $scope.createProduct = function () {
         if ($scope.new_product == null) {
@@ -14,9 +14,12 @@ angular.module('market-front').controller('createProductController', function ($
             }, function failureCallback (response) {
                 console.log(response);
                 alert(response.data.messages);
-            }).catch(function (err){
-            alert("Пожалуйста, авторизуйтесь");
-            $scope.clearUser();
+            }).catch(function (err) {
+            console.log(err);
+            if (err.status===401) {
+                alert("Пожалуйста, авторизуйтесь");
+                $scope.clearUser();
+            } else alert(err.data.message)
         });
     }
 

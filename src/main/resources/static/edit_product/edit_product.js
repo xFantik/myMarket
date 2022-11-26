@@ -1,5 +1,5 @@
 angular.module('market-front').controller('editProductController', function ($scope, $http, $routeParams, $location) {
-    const contextPath = 'http://localhost:8189/market/';
+    const contextPath = 'http://' + window.location.hostname + ':' + window.location.port + '/market/';
 
     $scope.prepareProductForUpdate = function () {
         $http.get(contextPath + 'api/v1/products/' + $routeParams.productId)
@@ -21,8 +21,11 @@ angular.module('market-front').controller('editProductController', function ($sc
             }, function failureCallback(response) {
                 alert(response.data.messages);
             }).catch(function (err) {
-            alert("Пожалуйста, авторизуйтесь");
-            $scope.clearUser();
+            console.log(err);
+            if (err.status===401) {
+                alert("Пожалуйста, авторизуйтесь");
+                $scope.clearUser();
+            } else alert(err.data.message)
         });
     }
 

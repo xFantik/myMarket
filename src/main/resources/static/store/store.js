@@ -1,6 +1,6 @@
 
 angular.module('market-front').controller('storeController', function ($rootScope, $scope, $http, $location, $localStorage) {
-    const contextPath = 'http://localhost:8189/market/api/v1';
+    const contextPath = 'http://' + window.location.hostname + ':' + window.location.port + '/market/api/v1';
     $scope.currentPage = 1
 
     $input = document.getElementById('input_min-id');

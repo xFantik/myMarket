@@ -56,8 +56,7 @@ public class UserService implements UserDetailsService {
             throw (new UserAlreadyExistException("Имя " + user.getUsername() + " занято"));
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         List<Role> roles = new ArrayList<>();
-        Role role =
-                roleRepository.findRoleByName("ROLE_USER").get();
+        Role role = roleRepository.findRoleByName("ROLE_USER").get();
         roles.add(role);
         user.setRoles(roles);
         userRepository.save(user);

@@ -16,18 +16,22 @@
         <tr ng-repeat="s in cartList">
             <td>{{s.title}}</td>
             <td>{{s.price}}р.</td>
-            <td>{{s.count}}шт.</td>
-            <td>{{s.cost}}р.</td>
             <td>
-                <button class="btn btn-primary" ng-click="addToCart(s.id)">В корзину</button>
+                <button class="btn btn-outline-info" ng-click="addToCart(s.id, -1)">-</button>
+                {{s.count}}шт.
+                <button class="btn btn-outline-info" ng-click="addToCart(s.id, 1)">+</button>
             </td>
+            <td>{{s.cost}}р.</td>
+            <td>            </td>
         <thead>
         <tr>
             <td></td>
             <td></td>
             <td>Итоговая стоимость</td>
             <td>{{total}}р.</td>
-            <td></td>
+            <td>
+                <button class="btn btn-primary" ng-click="createOrder()">Оформить заказ</button>
+            </td>
         </tr>
         </thead>
         </tbody>
@@ -35,19 +39,4 @@
     <p></p>
 
 
-    <!--    <div style="margin-left: 300px">-->
-    <!--        Страница-->
-    <!--        <button class="btn btn-primary" ng-click="goToPage(currentPage-1)"><</button>-->
-    <!--        <input name="id" type="text" id="current_page-id" style="width: 30px; text-align: center">-->
-    <!--        <button class="btn btn-primary" ng-click="goToPage(currentPage+1)">></button>-->
-    <!--        &lt;!&ndash;     {{currentPage+1}}&ndash;&gt;-->
-    <!--        из {{pagesCount}}-->
-    <!--    </div>-->
-    <!--    <nav aria-label="Page navigation">-->
-    <!--        <ul class="pagination">-->
-    <!--            <li class="page-item" ng-repeat="pageIndex in paginationArray">-->
-    <!--                <button class="page-link" ng-click="loadProducts(pageIndex)">{{pageIndex}}</button>-->
-    <!--            </li>-->
-    <!--        </ul>-->
-    <!--    </nav>-->
 </div>

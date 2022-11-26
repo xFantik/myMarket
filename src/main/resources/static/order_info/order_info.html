@@ -1,0 +1,38 @@
+<div>
+    <p></p>
+    <h3>Заказ №{{orderId}}</h3>
+    <table class="table">
+        <thead>
+        <tr>
+            <td>Название</td>
+            <td>Цена</td>
+            <td>Количество</td>
+            <td>Стоимость</td>
+
+
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr ng-repeat="p in order">
+            <td> {{p.title}}</td>
+            <td> {{p.price}}</td>
+            <td> {{p.count}}</td>
+            <td> {{p.cost}}</td>
+        </tr>
+
+        <thead>
+    <tr>
+        <td></td>
+        <td></td>
+        <td>Итоговая стоимость</td>
+        <td>{{total}}р.</td>
+
+    </tr>
+        </thead>
+        </tbody>
+    </table>
+    <p></p>
+
+
+</div>

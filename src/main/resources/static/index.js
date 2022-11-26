@@ -25,8 +25,14 @@
             }).when('/cart', {
             templateUrl: 'cart/cart.html',
             controller: 'cartController'
-        })
-            .when('/register_user', {
+            })
+            .when('/orders', {
+            templateUrl: 'orders/orders.html',
+            controller: 'orderController'
+            }).when('/order_info/:orderId', {
+            templateUrl: 'order_info/order_info.html',
+            controller: 'orderInfoController'
+            }).when('/register_user', {
                 templateUrl: 'register_user/register_user.html',
                 controller: 'registerUserController'
             })
