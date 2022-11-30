@@ -1,6 +1,7 @@
 package ru.pb.market.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.pb.market.dto.ProductInCartDto;
 import ru.pb.market.services.CartService;
@@ -20,6 +21,8 @@ public class CartController {
 
     @GetMapping("")
     public List<ProductInCartDto> getCart(@RequestHeader Map<String, String> headers) {
+        //todo: заменить на выдачу имя из контекста))
+        System.out.println("имя: "+SecurityContextHolder.getContext().getAuthentication().getName());
         return cartService.get(getUserNameFromHeaders(headers));
     }
 
@@ -35,6 +38,7 @@ public class CartController {
     }
 
     private String getUserNameFromHeaders(Map<String, String> headers) {
+
         return jwtTokenUtil.getUsernameFromToken(headers.get("authorization").substring(7));
     }
 

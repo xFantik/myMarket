@@ -29,6 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         log.info("Dao Authentication Provider");
         http
                 .csrf().disable()       //Встроенная безопасноть, запрещающая обращаться к приложению из браузера (например для работы с thymeleaf)
+                .cors().disable()  // не будут отсеиваться запросы от других сервисов
                 .authorizeRequests()
                 //.antMatchers("/auth/**").anonymous()
 
@@ -38,18 +39,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/orders/**").authenticated()
 
 
-                .antMatchers(HttpMethod.POST, "/api/v1/users/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/users/**").hasAnyRole("ADMIN", "SUPERADMIN")
+                .antMatchers(HttpMethod.POST, "/api/v1/users/**").hasAnyRole("ADMIN", "SUPERADMIN")
                 .antMatchers(                "/api/v1/users/**").hasAnyRole("SUPERADMIN")
 
                 .anyRequest().permitAll()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)  //так как rest, сессий у нас нет
                 .and()
-                .headers().frameOptions().disable()
+                .headers().frameOptions().disable() //неведомым образом разрешает работу с консолью h2
                 .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))  //отдать ошибку на фронт
+                .exceptionHandling()            //если вы пытаетесь достучаться до защещнной части
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))//возвращаем ошибку 401
+
                                                         ;
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }

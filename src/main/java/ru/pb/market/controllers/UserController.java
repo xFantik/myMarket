@@ -20,8 +20,6 @@ public class UserController {
     public List<UserDto> find(@RequestParam(required = false) String partName) {
         return userService.getAllUsers();
     }
-
-
     @PostMapping("")
     public void createUser(@RequestBody User user) {
         System.out.println(user.getUsername());

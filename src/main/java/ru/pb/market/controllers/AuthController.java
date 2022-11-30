@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.pb.market.data.User;
 import ru.pb.market.dto.JwtRequest;
 import ru.pb.market.dto.JwtResponse;
 import ru.pb.market.exceptions.AppError;
@@ -37,5 +38,12 @@ public class AuthController {
         String token = jwtTokenUtil.generateToken(userDetails);
 
         return ResponseEntity.ok(new JwtResponse(token, userDetails.getAuthorities()));
+    }
+    @PostMapping("/registration")
+    public void createUser(@RequestBody User user) {
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
+        System.out.println(user.getEmail());
+        userService.createUser(user);
     }
 }

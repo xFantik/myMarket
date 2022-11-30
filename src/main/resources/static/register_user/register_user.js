@@ -17,7 +17,7 @@ angular.module('market-front').controller('registerUserController', function ($s
             alert('Неверный email')
 
         } else {
-            $http.post(contextPath + 'api/v1/users', $scope.new_user)
+            $http.post(contextPath + 'registration', $scope.new_user)
                 .then(function successCallback(response) {
                     $scope.new_user = null;
                     alert('Пользователь создан');
