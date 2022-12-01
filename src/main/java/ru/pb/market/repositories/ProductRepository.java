@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import ru.pb.market.data.Product;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
@@ -19,4 +20,5 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
     boolean existsById(Long id);
     List<Product> getProductByIdIn(Long[] id);
 
+    Optional<Product> findByTitle(String title);
 }

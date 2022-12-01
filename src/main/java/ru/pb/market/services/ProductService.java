@@ -18,6 +18,8 @@ import ru.pb.market.repositories.specification.ProductSpecification;
 import ru.pb.market.validators.ProductValidator;
 
 import java.util.List;
+import java.util.function.Function;
+
 @Component
 @RequiredArgsConstructor //конструктор для Autowired
 @Slf4j
@@ -122,4 +124,20 @@ public class ProductService {
     public List<Product> getProductsByIdIn(Long[] ids){
         return productRepository.getProductByIdIn(ids);
     }
+
+    public ru.pb.market.soap.products.Product getProductByTitle(String name) {
+        return productRepository.findByTitle(name).map(functionEntityToSoap).get();
+    }
+    public List<ru.pb.market.soap.products.Product> getAllProductsSoap() {
+        return productRepository.findAll().stream().map(functionEntityToSoap).toList();
+    }
+
+    public static final Function<Product, ru.pb.market.soap.products.Product> functionEntityToSoap = se -> {
+        ru.pb.market.soap.products.Product p = new ru.pb.market.soap.products.Product();
+        p.setId(se.getId());
+        p.setTitle(se.getTitle());
+        p.setCost(se.getPrice());
+        return p;
+    };
+
 }
