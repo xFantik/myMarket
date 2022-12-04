@@ -1,0 +1,30 @@
+<div>
+    <p></p>
+    <h3>Заказы</h3>
+    <h5 ng-show="!hasOrders">Вы еще ничего не заказывали :(</h5>
+
+
+    <table class="table" ng-show="hasOrders" >
+        <thead>
+        <tr>
+            <td>Номер заказа</td>
+            <td>Дата</td>
+            <td>Сумма</td>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr ng-repeat="o in orderList" >
+            <td><a class="nav-link" style="margin: 0; padding: 0" href="#!/order_info/{{o.id}}"> {{o.id}}</a></td>
+            <td><a class="nav-link" style="margin: 0; padding: 0" href="#!/order_info/{{o.id}}"> {{o.createdAt}}</a></td>
+            <td><a class="nav-link" style="margin: 0; padding: 0" href="#!/order_info/{{o.id}}"> {{o.totalCost}}р.</a></td>
+
+        <thead>
+
+        </thead>
+        </tbody>
+    </table>
+    <p></p>
+
+
+</div>

@@ -16,7 +16,7 @@ import java.util.Map;
 public class CartController {
 
     private final CartService cartService;
-private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @GetMapping("")
     public List<ProductInCartDto> getCart(@RequestHeader Map<String, String> headers) {
@@ -34,8 +34,8 @@ private final JwtTokenUtil jwtTokenUtil;
         cartService.addProduct(getUserNameFromHeaders(headers), productId, count);
     }
 
-    private String getUserNameFromHeaders(Map<String, String> headers){
-        return  jwtTokenUtil.getUsernameFromToken(headers.get("authorization").substring(7));
+    private String getUserNameFromHeaders(Map<String, String> headers) {
+        return jwtTokenUtil.getUsernameFromToken(headers.get("authorization").substring(7));
     }
 
 }

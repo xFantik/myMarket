@@ -24,11 +24,7 @@ public class CartService {
 
     private HashMap<String, HashMap<Long, Integer>> carts;
 
-  //  private HashMap<Long, Integer> products;
-
     private final ProductService productService;
-
-    private final UserService userService;
 
     private final ProductConverter productConverter;
 
@@ -36,7 +32,6 @@ public class CartService {
 
     @PostConstruct
     public void init() {
-      //  products = new HashMap<>();
         carts = new HashMap<>();
     }
 
@@ -44,9 +39,18 @@ public class CartService {
         HashMap<Long, Integer> products = getCart(username);
         log.info("Добавили в корзину {} {}", count, productService.getTitleById(productId));
         products.put(productId, products.getOrDefault(productId, 0) + count);
+        if (products.get(productId) <= 0) {
+            products.remove(productId);
+            log.info("В корзине не осталось {}, убрали совсем", productService.getTitleById(productId));
+        }
     }
 
 
+    public void clearCart(String userName){
+        HashMap<Long, Integer> products = getCart(userName);
+        products.clear();
+
+    }
     public void removeProduct(String username, long productId, int count) {
         HashMap<Long, Integer> products = getCart(username);
         products.put(productId, products.getOrDefault(productId, 0) - count);

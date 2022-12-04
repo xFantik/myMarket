@@ -10,6 +10,7 @@ public class ProductInCartDto {
     private Long id;
     private String title;
     private int price;
+
     private int count;
 
 

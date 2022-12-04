@@ -1,5 +1,5 @@
 angular.module('market-front').controller('registerUserController', function ($scope, $http, $routeParams, $location) {
-    const contextPath = 'http://localhost:8189/market/';
+    const contextPath = 'http://' + window.location.hostname + ':' + window.location.port + '/market/';
 
 
     $scope.registerUser = function () {
